@@ -17,6 +17,8 @@ MU = 0.0005
 LEAK = 1e-5
 OUT_LIMIT = 0.3
 TEST_NOISE_GAIN = 0.05
+INPUT_GAIN = 2.0
+OUTPUT_GAIN = 2.0
 # ==================================================
 
 print("Audio devices:")
@@ -115,8 +117,8 @@ def main():
         if status:
             print(status)
 
-        x_ref = indata[:, 0].astype(np.float32)   # phone
-        e_err = indata[:, 1].astype(np.float32)   # built-in mic
+        x_ref = indata[:, 0].astype(np.float32) * INPUT_GAIN  # phone
+        e_err = indata[:, 1].astype(np.float32) * INPUT_GAIN  # built-in mic
         y = anc.step_block(x_ref, e_err)
         last_block = y  # save for output
 
@@ -135,8 +137,8 @@ def main():
             print(status)
 
         if last_block is not None:
-            outdata[:, 0] = last_block
-            outdata[:, 1] = last_block
+            outdata[:, 0] = last_block * OUTPUT_GAIN
+            outdata[:, 1] = last_block * OUTPUT_GAIN
         else:
             outdata.fill(0)
 
