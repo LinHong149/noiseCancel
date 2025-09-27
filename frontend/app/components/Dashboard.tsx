@@ -14,6 +14,7 @@ export const Dashboard = () => {
   const [isNoiseActive, setIsNoiseActive] = useState(false);
   const [cancellationLevel, setCancellationLevel] = useState(75);
   const [currentNoiseLevel, setCurrentNoiseLevel] = useState(0);
+  const [scheduleEnabled, setScheduleEnabled] = useState(false);
 
   useEffect(() => {
     // Initialize volume logger
@@ -134,7 +135,9 @@ export const Dashboard = () => {
                 <NoiseDetection isActive={isNoiseActive} currentNoiseLevel={currentNoiseLevel} />
                 <ScheduleControl 
                   isActive={isNoiseActive} 
-                  onScheduleToggle={setIsNoiseActive}
+                  onScheduleToggle={scheduleEnabled ? setIsNoiseActive : undefined}
+                  scheduleEnabled={scheduleEnabled}
+                  onScheduleEnabledChange={setScheduleEnabled}
                 />
               </div>
             </div>

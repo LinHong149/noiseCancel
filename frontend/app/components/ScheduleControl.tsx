@@ -14,10 +14,11 @@ import { cn } from "@/lib/utils";
 interface ScheduleControlProps {
   isActive: boolean;
   onScheduleToggle?: (isActive: boolean) => void;
+  scheduleEnabled: boolean;
+  onScheduleEnabledChange: (enabled: boolean) => void;
 }
 
-export const ScheduleControl = ({ isActive, onScheduleToggle }: ScheduleControlProps) => {
-  const [scheduleEnabled, setScheduleEnabled] = useState(false);
+export const ScheduleControl = ({ isActive, onScheduleToggle, scheduleEnabled, onScheduleEnabledChange }: ScheduleControlProps) => {
   const [startTime, setStartTime] = useState("09:00");
   const [endTime, setEndTime] = useState("17:00");
   const [startTimeOpen, setStartTimeOpen] = useState(false);
@@ -138,8 +139,7 @@ export const ScheduleControl = ({ isActive, onScheduleToggle }: ScheduleControlP
             <Switch
               id="schedule-mode"
               checked={scheduleEnabled}
-              onCheckedChange={setScheduleEnabled}
-              disabled={!isActive}
+              onCheckedChange={onScheduleEnabledChange}
             />
           </div>
         </div>

@@ -15,13 +15,13 @@ export const VolumeHistory = () => {
       try {
         setLoading(true);
         
-        // Get last 24 hours of data (86400 data points for 1-second intervals)
+        // Get last 24 hours of data (288 data points for 5-minute intervals)
         const endDate = new Date();
         const startDate = new Date();
         startDate.setHours(startDate.getHours() - 24);
         
         const response = await fetch(
-          `/api/volume-history?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}&limit=86400`
+          `/api/volume-history?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}&limit=288`
         );
         
         if (!response.ok) {
@@ -104,7 +104,7 @@ export const VolumeHistory = () => {
               <TrendingDown className="w-3 h-3 text-audio-primary" />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Avg Volume (24h, 1sec intervals)</p>
+              <p className="text-xs text-muted-foreground">Avg Volume (24h, 5min intervals)</p>
               <p className="text-lg font-bold text-foreground">{avgVolume} dB</p>
             </div>
           </div>
@@ -139,7 +139,7 @@ export const VolumeHistory = () => {
         <div className="space-y-3 h-full flex flex-col">
           <div>
             <h3 className="text-lg font-semibold text-foreground">Volume History - Last 24 Hours</h3>
-            <p className="text-xs text-muted-foreground">1-second interval readings throughout the day</p>
+            <p className="text-xs text-muted-foreground">5-minute interval readings throughout the day</p>
           </div>
           
           <div className="flex-1 min-h-0">
