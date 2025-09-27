@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Power } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "./ui/button";
+import { Card } from "./ui/card";
 
 interface NoiseToggleProps {
   isActive: boolean;
@@ -11,7 +11,7 @@ interface NoiseToggleProps {
 export const NoiseToggle = ({ isActive, onToggle }: NoiseToggleProps) => {
   return (
     <Card className="p-6 bg-gradient-card border-border/50 shadow-card flex-1">
-      <div className="text-center space-y-4">
+      <div className="text-center space-y-4 h-full">
         <div className="space-y-1">
           <h2 className="text-xl font-bold text-foreground">Noise Cancellation</h2>
           <p className="text-sm text-muted-foreground">
@@ -19,11 +19,11 @@ export const NoiseToggle = ({ isActive, onToggle }: NoiseToggleProps) => {
           </p>
         </div>
         
-        <div className="flex justify-center">
+        <div className="flex justify-center pt-10">
           <Button
             onClick={() => onToggle(!isActive)}
             className={`
-              relative w-20 h-20 rounded-full p-0 transition-all duration-300
+              relative w-40 h-40 rounded-full p-0 transition-all duration-300
               ${isActive 
                 ? 'bg-gradient-active shadow-glow hover:shadow-glow' 
                 : 'bg-secondary hover:bg-secondary/80'

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { NoiseToggle } from "./NoiseToggle";
 import { NoiseSlider } from "./NoiseSlider";
 import { NoiseDetection } from "./NoiseDetection";
@@ -18,7 +18,7 @@ export const Dashboard = () => {
         {/* Header */}
         <div className="text-center mb-4">
           <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-1">
-            NoiseShield Pro
+            Noise Cancel
           </h1>
         </div>
 

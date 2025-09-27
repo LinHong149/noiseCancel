@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card } from "./ui/card";
+import { Badge } from "./ui/badge";
 import { Mic, MicOff, Waves } from "lucide-react";
 
 interface NoiseDetectionProps {
@@ -46,7 +46,7 @@ export const NoiseDetection = ({ isActive }: NoiseDetectionProps) => {
   };
 
   return (
-    <Card className="p-4 bg-gradient-card border-border/50 shadow-card flex-1">
+    <Card className="p-4 bg-gradient-card border-border/50 shadow-card">
       <div className="space-y-3 h-full flex flex-col">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-foreground">Current Environment</h3>
@@ -63,7 +63,31 @@ export const NoiseDetection = ({ isActive }: NoiseDetectionProps) => {
         </div>
 
         {isActive ? (
-          <div className="space-y-3 flex-1">
+          <div className="space-y-5 flex-1">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <span className="text-xl">{currentNoise.icon}</span>
+                <div>
+                  <p className="font-medium text-foreground">{currentNoise.type}</p>
+                  <p className="text-xs text-muted-foreground">Detected noise source</p>
+                </div>
+              </div>
+              <Badge className={getIntensityColor(currentNoise.intensity)}>
+                {currentNoise.intensity}
+              </Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <span className="text-xl">{currentNoise.icon}</span>
+                <div>
+                  <p className="font-medium text-foreground">{currentNoise.type}</p>
+                  <p className="text-xs text-muted-foreground">Detected noise source</p>
+                </div>
+              </div>
+              <Badge className={getIntensityColor(currentNoise.intensity)}>
+                {currentNoise.intensity}
+              </Badge>
+            </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <span className="text-xl">{currentNoise.icon}</span>

@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { Card } from "./ui/card";
+import { Button } from "./ui/button";
+import { Switch } from "./ui/switch";
+import { Label } from "./ui/label";
 import { Clock, Calendar } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "./ui/popover";
 import { cn } from "@/lib/utils";
 
 interface ScheduleControlProps {
@@ -102,7 +102,7 @@ export const ScheduleControl = ({ isActive }: ScheduleControlProps) => {
   };
 
   return (
-    <Card className="p-4 bg-gradient-card border-border/50 shadow-card">
+    <Card className="p-4 bg-gradient-card border-border/50 shadow-card flex-1">
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-foreground">Schedule</h3>

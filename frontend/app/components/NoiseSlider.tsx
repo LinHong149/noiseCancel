@@ -1,5 +1,5 @@
-import { Slider } from "@/components/ui/slider";
-import { Card } from "@/components/ui/card";
+import { Slider } from "./ui/slider";
+import { Card } from "./ui/card";
 import { Volume, VolumeX, Volume2 } from "lucide-react";
 
 interface NoiseSliderProps {
@@ -18,7 +18,7 @@ export const NoiseSlider = ({ value, onChange, isActive }: NoiseSliderProps) => 
   const VolumeIcon = getVolumeIcon();
 
   return (
-    <Card className="p-4 bg-gradient-card border-border/50 shadow-card flex-1">
+    <Card className="p-4 bg-gradient-card border-border/50 shadow-card">
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-foreground">Cancellation Level</h3>
@@ -31,7 +31,7 @@ export const NoiseSlider = ({ value, onChange, isActive }: NoiseSliderProps) => 
           <div className="flex-1">
             <Slider
               value={[value]}
-              onValueChange={(values) => onChange(values[0])}
+              onValueChange={(values: number[]) => onChange(values[0])}
               max={100}
               step={1}
               disabled={!isActive}
