@@ -132,7 +132,10 @@ export const Dashboard = () => {
               {/* Detection Display */}
               <div className="flex flex-col space-y-4">
                 <NoiseDetection isActive={isNoiseActive} currentNoiseLevel={currentNoiseLevel} />
-                <ScheduleControl isActive={isNoiseActive} />
+                <ScheduleControl 
+                  isActive={isNoiseActive} 
+                  onScheduleToggle={setIsNoiseActive}
+                />
               </div>
             </div>
           </TabsContent>

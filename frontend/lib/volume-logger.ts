@@ -20,16 +20,10 @@ export class VolumeLogger {
     
     this.isLogging = true;
     
-    // Check every minute if the minute is divisible by 5
+    // Log every second
     this.logInterval = setInterval(() => {
-      const now = new Date();
-      const minutes = now.getMinutes();
-      
-      // Only log when minutes % 5 === 0 (0, 5, 10, 15, 20, etc.)
-      if (minutes % 5 === 0) {
-        this.logVolumeReading();
-      }
-    }, 60000); // Check every minute (60000ms)
+      this.logVolumeReading();
+    }, 1000); // Log every second (1000ms)
   }
 
   stopLogging(): void {

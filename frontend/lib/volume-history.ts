@@ -45,7 +45,7 @@ export async function getVolumeHistory(
     return {
       readings: readings.map(reading => ({
         _id: reading._id.toString(),
-        timestamp: reading.timestamp,
+        timestamp: new Date(reading.timestamp),
         volume: reading.volume,
         ambient: reading.ambient,
         isActive: reading.isActive,
@@ -93,7 +93,7 @@ export async function getRecentVolumeReadings(limit: number = 24): Promise<Volum
   
   return readings.map(reading => ({
     _id: reading._id.toString(),
-    timestamp: reading.timestamp,
+    timestamp: new Date(reading.timestamp),
     volume: reading.volume,
     ambient: reading.ambient,
     isActive: reading.isActive,

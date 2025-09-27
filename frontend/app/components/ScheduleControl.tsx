@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Switch } from "./ui/switch";
@@ -13,14 +13,39 @@ import { cn } from "@/lib/utils";
 
 interface ScheduleControlProps {
   isActive: boolean;
+  onScheduleToggle?: (isActive: boolean) => void;
 }
 
-export const ScheduleControl = ({ isActive }: ScheduleControlProps) => {
+export const ScheduleControl = ({ isActive, onScheduleToggle }: ScheduleControlProps) => {
   const [scheduleEnabled, setScheduleEnabled] = useState(false);
   const [startTime, setStartTime] = useState("09:00");
   const [endTime, setEndTime] = useState("17:00");
   const [startTimeOpen, setStartTimeOpen] = useState(false);
   const [endTimeOpen, setEndTimeOpen] = useState(false);
+
+  // Check schedule every minute
+  useEffect(() => {
+    if (!scheduleEnabled) return;
+
+    const checkSchedule = () => {
+      const now = new Date();
+      const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+      
+      const shouldBeActive = currentTime >= startTime && currentTime <= endTime;
+      
+      if (shouldBeActive !== isActive && onScheduleToggle) {
+        onScheduleToggle(shouldBeActive);
+      }
+    };
+
+    // Check immediately
+    checkSchedule();
+
+    // Check every minute
+    const interval = setInterval(checkSchedule, 60000);
+
+    return () => clearInterval(interval);
+  }, [scheduleEnabled, startTime, endTime, isActive, onScheduleToggle]);
 
   const generateTimeOptions = () => {
     const times = [];
