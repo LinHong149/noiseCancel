@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { spawn } from 'child_process';
 import path from 'path';
+import fs from 'fs';
 
 let pythonProcess: any = null;
 
@@ -17,10 +18,22 @@ export async function POST(request: NextRequest) {
       }
 
       // Start the Python noise cancellation script
-      const scriptPath = path.join(process.cwd(), '../../backend/main.py');
+      const scriptPath = path.join(process.cwd(), '../backend/main.py');
+      const pythonPath = path.join(process.cwd(), '../backend/venv/bin/python3');
+      const backendPath = path.join(process.cwd(), '../backend');
       
-      pythonProcess = spawn('python3', [scriptPath], {
-        cwd: path.join(process.cwd(), '../../backend'),
+      console.log('=== Python Process Debug Info ===');
+      console.log('Current working directory:', process.cwd());
+      console.log('Script path:', scriptPath);
+      console.log('Python path:', pythonPath);
+      console.log('Backend path:', backendPath);
+      console.log('Script exists:', fs.existsSync(scriptPath));
+      console.log('Python exists:', fs.existsSync(pythonPath));
+      console.log('Backend directory exists:', fs.existsSync(backendPath));
+      console.log('===================================');
+      
+      pythonProcess = spawn(pythonPath, [scriptPath], {
+        cwd: backendPath,
         stdio: ['pipe', 'pipe', 'pipe']
       });
 
@@ -39,6 +52,13 @@ export async function POST(request: NextRequest) {
 
       pythonProcess.on('error', (error: Error) => {
         console.error('Failed to start Python process:', error);
+        console.error('Error details:', {
+          errno: error.errno,
+          code: error.code,
+          syscall: error.syscall,
+          path: error.path,
+          spawnargs: error.spawnargs
+        });
         pythonProcess = null;
       });
 

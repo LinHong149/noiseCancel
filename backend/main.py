@@ -21,6 +21,9 @@ INPUT_GAIN = 2.0
 OUTPUT_GAIN = 2.0
 # ==================================================
 
+# Global variable for audio processing
+last_block = None
+
 print("Audio devices:")
 print(sd.query_devices())
 
@@ -109,8 +112,6 @@ def main():
     # Aggregate Device setup:
     # Input channels: 0=BlackHole L (phone), 1=BlackHole R, 2=Built-in mic
     # Output channels: 0=Bedroom speaker L, 1=Bedroom speaker R
-
-    last_block = None
 
     def input_callback(indata, frames, time_info, status):
         global last_block
