@@ -127,7 +127,7 @@ export const ScheduleControl = ({ isActive, onScheduleToggle }: ScheduleControlP
   };
 
   return (
-    <Card className="p-4 bg-gradient-card border-border/50 shadow-card flex-1">
+    <Card className="p-4 bg-gradient-card border-border/50 shadow-card h-40">
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-foreground">Schedule</h3>

@@ -47,7 +47,7 @@ export const NoiseDetection = ({ isActive, currentNoiseLevel }: NoiseDetectionPr
   };
 
   return (
-    <Card className="p-4 bg-gradient-card border-border/50 shadow-card">
+    <Card className="p-4 bg-gradient-card border-border/50 shadow-card flex-1">
       <div className="space-y-3 h-full flex flex-col">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-foreground">Current Environment</h3>
