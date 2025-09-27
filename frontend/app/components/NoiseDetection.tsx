@@ -5,6 +5,7 @@ import { Mic, MicOff, Waves } from "lucide-react";
 
 interface NoiseDetectionProps {
   isActive: boolean;
+  currentNoiseLevel: number;
 }
 
 const noiseTypes = [
@@ -16,7 +17,7 @@ const noiseTypes = [
   { type: "Rain", intensity: "Medium", icon: "🌧️" },
 ];
 
-export const NoiseDetection = ({ isActive }: NoiseDetectionProps) => {
+export const NoiseDetection = ({ isActive, currentNoiseLevel }: NoiseDetectionProps) => {
   const [currentNoise, setCurrentNoise] = useState(noiseTypes[0]);
   const [isDetecting, setIsDetecting] = useState(false);
 
@@ -103,15 +104,15 @@ export const NoiseDetection = ({ isActive }: NoiseDetectionProps) => {
             
             <div className="bg-muted/20 rounded-lg p-3">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm text-muted-foreground">Noise Level</span>
+                <span className="text-sm text-muted-foreground">Current Noise Level</span>
                 <span className="text-sm font-medium text-foreground">
-                  {Math.floor(Math.random() * 30) + 50} dB
+                  {Math.round(currentNoiseLevel)} dB
                 </span>
               </div>
               <div className="w-full bg-muted rounded-full h-2">
                 <div 
-                  className="bg-gradient-active h-2 rounded-full transition-all duration-1000"
-                  style={{ width: `${Math.floor(Math.random() * 40) + 40}%` }}
+                  className="bg-gradient-active h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${Math.min(100, currentNoiseLevel)}%` }}
                 />
               </div>
             </div>

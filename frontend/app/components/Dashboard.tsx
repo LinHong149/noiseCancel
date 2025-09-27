@@ -8,47 +8,81 @@ import { ScheduleControl } from "./ScheduleControl";
 import { VolumeHistory } from "./VolumeHistory";
 import { Activity, Settings } from "lucide-react";
 import { VolumeLogger } from "@/lib/volume-logger";
+import { AudioMonitor } from "@/lib/audio-monitor";
 
 export const Dashboard = () => {
   const [isNoiseActive, setIsNoiseActive] = useState(false);
-  const [noiseLevel, setNoiseLevel] = useState(75);
+  const [cancellationLevel, setCancellationLevel] = useState(75);
+  const [currentNoiseLevel, setCurrentNoiseLevel] = useState(0);
 
   useEffect(() => {
     // Initialize volume logger
     const volumeLogger = VolumeLogger.getInstance();
     volumeLogger.startLogging();
 
+    // Initialize audio monitor
+    const audioMonitor = AudioMonitor.getInstance();
+
     // Update volume data with current values
-    volumeLogger.updateVolume(noiseLevel, noiseLevel + 10, isNoiseActive);
+    volumeLogger.updateVolume(currentNoiseLevel, currentNoiseLevel + 10, isNoiseActive);
 
     // Cleanup on unmount
     return () => {
       volumeLogger.stopLogging();
+      audioMonitor.stopMonitoring();
     };
   }, []);
 
   // Update volume logger when values change
   useEffect(() => {
     const volumeLogger = VolumeLogger.getInstance();
-    volumeLogger.updateVolume(noiseLevel, noiseLevel + 10, isNoiseActive);
-  }, [noiseLevel, isNoiseActive]);
+    volumeLogger.updateVolume(currentNoiseLevel, currentNoiseLevel + 10, isNoiseActive);
+  }, [currentNoiseLevel, isNoiseActive]);
 
-  // Control Python noise cancellation script
+  // Control Python noise cancellation script and audio monitoring
   useEffect(() => {
     const controlNoiseCancellation = async () => {
       try {
-        const response = await fetch('/api/noise-cancel', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            action: isNoiseActive ? 'start' : 'stop'
-          }),
-        });
+        const audioMonitor = AudioMonitor.getInstance();
+        
+        if (isNoiseActive) {
+          // Start Python script
+          const response = await fetch('/api/noise-cancel', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              action: 'start'
+            }),
+          });
 
-        const result = await response.json();
-        console.log('Noise cancellation control:', result);
+          const result = await response.json();
+          console.log('Noise cancellation control:', result);
+
+          // Start audio monitoring
+          const monitoringStarted = await audioMonitor.startMonitoring((volume) => {
+            setCurrentNoiseLevel(Math.round(volume));
+          });
+
+          if (!monitoringStarted) {
+            console.error('Failed to start audio monitoring');
+          }
+        } else {
+          // Stop Python script
+          await fetch('/api/noise-cancel', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              action: 'stop'
+            }),
+          });
+
+          // Stop audio monitoring
+          audioMonitor.stopMonitoring();
+        }
       } catch (error) {
         console.error('Error controlling noise cancellation:', error);
       }
@@ -89,15 +123,15 @@ export const Dashboard = () => {
                   onToggle={setIsNoiseActive} 
                 />
                 <NoiseSlider 
-                  value={noiseLevel}
-                  onChange={setNoiseLevel}
+                  value={cancellationLevel}
+                  onChange={setCancellationLevel}
                   isActive={isNoiseActive}
                 />
               </div>
 
               {/* Detection Display */}
               <div className="flex flex-col space-y-4">
-                <NoiseDetection isActive={isNoiseActive} />
+                <NoiseDetection isActive={isNoiseActive} currentNoiseLevel={currentNoiseLevel} />
                 <ScheduleControl isActive={isNoiseActive} />
               </div>
             </div>
