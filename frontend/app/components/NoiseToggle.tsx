@@ -23,7 +23,7 @@ export const NoiseToggle = ({ isActive, onToggle }: NoiseToggleProps) => {
           <Button
             onClick={() => onToggle(!isActive)}
             className={`
-              relative w-40 h-40 rounded-full p-0 transition-all duration-300
+              relative w-80 h-80 rounded-full p-0 transition-all duration-300
               ${isActive 
                 ? 'bg-gradient-active shadow-glow hover:shadow-glow' 
                 : 'bg-secondary hover:bg-secondary/80'
@@ -31,7 +31,7 @@ export const NoiseToggle = ({ isActive, onToggle }: NoiseToggleProps) => {
             `}
           >
             <Power 
-              className={`w-7 h-7 transition-all duration-300 ${
+              className={`w-12 h-12 transition-all duration-300 ${
                 isActive ? 'text-primary-foreground' : 'text-muted-foreground'
               }`} 
             />
@@ -39,7 +39,7 @@ export const NoiseToggle = ({ isActive, onToggle }: NoiseToggleProps) => {
         </div>
         
         <div className={`
-          text-sm font-medium transition-colors duration-300
+          text-xl font-medium transition-colors duration-300
           ${isActive ? 'text-audio-primary' : 'text-muted-foreground'}
         `}>
           {isActive ? 'ON' : 'OFF'}

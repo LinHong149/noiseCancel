@@ -18,8 +18,8 @@ export const NoiseSlider = ({ value, onChange, isActive }: NoiseSliderProps) => 
   const VolumeIcon = getVolumeIcon();
 
   return (
-    <Card className="p-4 bg-gradient-card border-border/50 shadow-card">
-      <div className="space-y-3">
+    <Card className="px-4 py-4 bg-gradient-card border-border/50 shadow-card">
+      <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-foreground">Cancellation Level</h3>
           <span className="text-sm text-muted-foreground">{value}%</span>

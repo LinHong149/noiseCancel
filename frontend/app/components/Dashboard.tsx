@@ -93,8 +93,8 @@ export const Dashboard = () => {
   }, [isNoiseActive]);
 
   return (
-    <div className="h-screen bg-background flex flex-col overflow-hidden">
-      <div className="container mx-auto px-4 py-4 max-w-6xl flex-1 flex flex-col">
+    <div className="h-screen bg-background flex flex-col overflow-hidden pb-10">
+      <div className="container  px-4 py-4 flex-1 flex flex-col">
         {/* Header */}
         <div className="text-center mb-4">
           <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-1">

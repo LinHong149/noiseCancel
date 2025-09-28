@@ -5,15 +5,15 @@ from scipy.signal import lfilter
 # ================= USER SETTINGS =================
 SR = 48000
 BLOCKSIZE = 1024
-AGG_DEVICE = 5       # Aggregate Device
+AGG_DEVICE = 4       # Aggregate Device
 REF_CH = 0           # iPhone
 ERR_CH = 1           # Built-in microphone
 OUT_CH = 0           # Bedroom speaker
 BLOCK = 1024
 SEC_ID_SECS = 2.0
-S_LEN = 256
-W_LEN = 256
-MU = 0.0005
+S_LEN = 512
+W_LEN = 512
+MU = 0.05
 LEAK = 1e-5
 OUT_LIMIT = 1.0
 TEST_NOISE_GAIN = 0.05
@@ -42,6 +42,7 @@ def identify_secondary_path():
     excite = (np.random.randn(n_frames).astype(np.float32)) * TEST_NOISE_GAIN
 
     # Capture reference + error mic together
+    print("Aggregate Device info:", sd.query_devices(AGG_DEVICE))
     rec = sd.playrec(
         excite.reshape(-1,1),          # 1 output channel
         samplerate=SR,
@@ -84,23 +85,34 @@ class ANC:
     def step_block(self, x_ref, e_err):
         N = len(x_ref)
         y_out = np.zeros(N, dtype=np.float32)
+
         for n in range(N):
+            # Update reference buffer
             self.xbuf = np.roll(self.xbuf, 1)
             self.xbuf[0] = x_ref[n]
 
+            # Anti-noise (before gain)
             y = np.dot(self.W, self.xbuf)
             y_out[n] = y
 
-            self.sbuf = np.roll(self.sbuf, 1)
-            self.sbuf[0] = x_ref[n]
-            xhat = np.dot(self.s_hat, self.sbuf)
+            # Filter reference through secondary path (filtered-x)
+            x_filt = np.convolve(self.xbuf, self.s_hat, mode="full")[:len(self.xbuf)]
 
+            # Error signal
             e = e_err[n]
-            norm = np.dot(self.xbuf, self.xbuf) + self.eps
-            self.W = (1 - LEAK) * self.W + MU * e * (xhat / (np.sqrt(norm) + 1e-6)) * self.xbuf
 
+            # FxLMS weight update (normalized)
+            norm = np.dot(x_filt, x_filt) + self.eps
+            self.W = (1 - LEAK) * self.W - MU * e * x_filt / norm
+
+
+        # scale by OUTPUT_GAIN then limiter (so limiter caps the *final* level)
+        y_out = y_out * OUTPUT_GAIN
         y_out = np.clip(y_out, -OUT_LIMIT, OUT_LIMIT)
+
         return y_out
+
+
 
 def main():
     print("[Step 1] Identifying secondary path...")
@@ -121,16 +133,21 @@ def main():
         x_ref = indata[:, 0].astype(np.float32) * INPUT_GAIN  # phone
         e_err = indata[:, 1].astype(np.float32) * INPUT_GAIN  # built-in mic
         y = anc.step_block(x_ref, e_err)
-        last_block = y  # save for output
 
-        # monitoring every ~50 blocks
+        # init counter
         if not hasattr(input_callback, 'counter'):
             input_callback.counter = 0
         input_callback.counter += 1
+
+        # monitor adaptation
         if input_callback.counter % 50 == 0:
+            w_norm = np.linalg.norm(anc.W)
             print(f"[AUDIO] Ref RMS: {np.sqrt(np.mean(x_ref**2)):.4f} | "
-                f"Err RMS: {np.sqrt(np.mean(e_err**2)):.4f} | "
-                f"Out RMS: {np.sqrt(np.mean(y**2)):.4f}")
+                  f"Err RMS: {np.sqrt(np.mean(e_err**2)):.4f} | "
+                  f"Out RMS: {np.sqrt(np.mean(y**2)):.4f} | "
+                  f"W norm: {w_norm:.6f}")
+        
+        last_block = y  # save for output
 
     def output_callback(outdata, frames, time_info, status):
         global last_block
@@ -138,10 +155,12 @@ def main():
             print(status)
 
         if last_block is not None:
-            outdata[:, 0] = last_block * OUTPUT_GAIN
-            outdata[:, 1] = last_block * OUTPUT_GAIN
+            # last_block is already scaled + clipped
+            outdata[:, 0] = last_block
+            outdata[:, 1] = last_block
         else:
             outdata.fill(0)
+
 
     # --- Open stream ---
     with sd.InputStream(
