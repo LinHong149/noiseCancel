@@ -15,10 +15,10 @@ S_LEN = 256
 W_LEN = 256
 MU = 0.0005
 LEAK = 1e-5
-OUT_LIMIT = 0.3
+OUT_LIMIT = 1.0
 TEST_NOISE_GAIN = 0.05
 INPUT_GAIN = 2.0
-OUTPUT_GAIN = 2.0
+OUTPUT_GAIN = 10.0
 # ==================================================
 
 # Global variable for audio processing
